@@ -1,109 +1,95 @@
 import unittest
+from unittest.mock import MagicMock
 import os
-import tkinter as tk
-from emulator import ShellEmulator
+import tempfile
+import tarfile
+from io import StringIO
+from emulator import ShellEmulator, create_test_tar
+
 
 class TestShellEmulator(unittest.TestCase):
+
     def setUp(self):
-        self.root = tk.Tk()
-        self.output_widget = tk.Text(self.root)
-        self.emulator = ShellEmulator("testuser", "/path/to/startup_script.sh", self.output_widget)
-        self.test_dir = os.path.join(os.getcwd(), "test_dir")
-        os.makedirs(self.test_dir, exist_ok=True)
+        """Создаём временные файлы и эмулятор перед каждым тестом."""
+        # Создаём временный tar-архив с виртуальной файловой системой
+        self.tar_file = tempfile.NamedTemporaryFile(delete=False)
+        create_test_tar(self.tar_file.name)
+
+        # Создаём виджет для вывода
+        self.output_widget = MagicMock()
+
+        # Создаём эмулятор с тестовыми параметрами
+        self.emulator = ShellEmulator(
+            username="test_user",
+            startup_script="startup.sh",  # Путь к стартовому скрипту (можно использовать пустой файл)
+            tar_path=self.tar_file.name,
+            output_widget=self.output_widget
+        )
 
     def tearDown(self):
-        # Очистка тестовой директории перед ее удалением
-        for file in os.listdir(self.test_dir):
-            file_path = os.path.join(self.test_dir, file)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
-        os.rmdir(self.test_dir)
-        self.root.destroy()
+        """Удаляем временные файлы после каждого теста."""
+        os.remove(self.tar_file.name)
 
-    # Тесты для команды `ls`
-    def test_ls_with_files(self):
-        open(os.path.join(self.test_dir, "file1.txt"), 'w').close()
-        self.emulator.current_path = self.test_dir
-        self.emulator.list_files()
-        output = self.output_widget.get("1.0", tk.END).strip()
-        self.assertIn("file1.txt", output)
+    def test_list_files(self):
+        """Тестируем команду 'ls'"""
+        self.emulator.execute_command("ls")
+        self.output_widget.insert.assert_called_with(
+            'end', 'file2.txt\nfile3.txt\n'
+        )
 
-    def test_ls_empty_directory(self):
-        self.emulator.current_path = self.test_dir
-        self.emulator.list_files()
-        output = self.output_widget.get("1.0", tk.END).strip()
-        self.assertIn("No files found.", output)
+    def test_change_directory(self):
+        """Тестируем команду 'cd'"""
+        self.emulator.execute_command("cd subdir")
+        self.assertEqual(self.emulator.current_path, '/subdir')
 
-    def test_ls_invalid_directory(self):
-        self.emulator.current_path = "/invalid/directory"
-        self.emulator.list_files()
-        output = self.output_widget.get("1.0", tk.END).strip()
-        self.assertIn("Error listing files", output)
+        # Попытка смены на несуществующую директорию
+        self.emulator.execute_command("cd nonexistent_dir")
+        self.output_widget.insert.assert_called_with(
+            'end', 'No such directory: nonexistent_dir\n'
+        )
 
-    # Тесты для команды `cd`
-    def test_cd_valid_directory(self):
-        self.emulator.change_directory("test_dir")
-        self.assertEqual(self.emulator.current_path, self.test_dir)
+    def test_change_owner(self):
+        """Тестируем команду 'chown'"""
+        self.emulator.execute_command("chown file1.txt new_owner")
+        self.output_widget.insert.assert_called_with(
+            'end', 'Changed owner of file1.txt to new_owner\n'
+        )
 
-    def test_cd_invalid_directory(self):
-        self.emulator.change_directory("nonexistent_dir")
-        output = self.output_widget.get("1.0", tk.END).strip()
-        self.assertIn("No such directory", output)
+    def test_change_owner_invalid(self):
+        """Тестируем команду 'chown' с несуществующим файлом"""
+        self.emulator.execute_command("chown nonexistent_file new_owner")
+        self.output_widget.insert.assert_called_with(
+            'end', 'No such file or directory: nonexistent_file\n'
+        )
 
-    def test_cd_parent_directory(self):
-        parent_dir = os.path.abspath(os.path.join(self.test_dir, ".."))
-        self.emulator.current_path = self.test_dir
-        self.emulator.change_directory("..")
-        self.assertEqual(self.emulator.current_path, parent_dir)
+    def test_find_file(self):
+        """Тестируем команду 'find'"""
+        self.emulator.execute_command("find file2.txt")
+        self.output_widget.insert.assert_called_with(
+            'end', 'subdir/file2.txt\n'
+        )
 
-    # Тесты для команды `exit`
+    def test_invalid_command(self):
+        """Тестируем команду с ошибкой"""
+        self.emulator.execute_command("invalid_command")
+        self.output_widget.insert.assert_called_with(
+            'end', 'Unknown command: invalid_command\n'
+        )
+
     def test_exit_emulator(self):
-        # Используем метод destroy вместо root.quit, чтобы завершить работу
-        self.output_widget.insert(tk.END, "Exiting emulator.\n")
+        """Тестируем команду 'exit'"""
+        self.emulator.exit_emulator = MagicMock()  # Мокаем метод exit_emulator для предотвращения закрытия GUI
+        self.emulator.execute_command("exit")
+        self.emulator.exit_emulator.assert_called_once()
 
-    # Тесты для команды `find`
-    def test_find_existing_file(self):
-        test_file = os.path.join(self.test_dir, "file_to_find.txt")
-        open(test_file, 'w').close()
-        self.emulator.current_path = self.test_dir
-        self.emulator.find_file("file_to_find.txt")
-        output = self.output_widget.get("1.0", tk.END).strip()
-        self.assertIn("file_to_find.txt", output)
+    def test_no_files_or_dirs(self):
+        """Тестируем сценарий, когда в директории нет файлов или подкаталогов"""
+        self.emulator.current_path = '/non_existent_dir'
+        self.emulator.execute_command("ls")
+        self.output_widget.insert.assert_called_with(
+            'end', 'No files or directories found.\n'
+        )
 
-    def test_find_nonexistent_file(self):
-        self.emulator.current_path = self.test_dir
-        self.emulator.find_file("nonexistent.txt")
-        output = self.output_widget.get("1.0", tk.END).strip()
-        self.assertIn("No files found matching", output)
-
-    def test_find_partial_match(self):
-        partial_file = os.path.join(self.test_dir, "partial_match.txt")
-        open(partial_file, 'w').close()
-        self.emulator.current_path = self.test_dir
-        self.emulator.find_file("partial")
-        output = self.output_widget.get("1.0", tk.END).strip()
-        self.assertIn("partial_match.txt", output)
-
-    # Тесты для команды `chown`
-    def test_chown_existing_file(self):
-        test_file = os.path.join(self.test_dir, "file_to_chown.txt")
-        open(test_file, 'w').close()
-        self.emulator.change_owner(test_file, "new_owner")
-        output = self.output_widget.get("1.0", tk.END).strip()
-        self.assertIn("Changed owner", output)
-
-    def test_chown_nonexistent_file(self):
-        self.emulator.change_owner("/nonexistent/file.txt", "new_owner")
-        output = self.output_widget.get("1.0", tk.END).strip()
-        self.assertIn("No such file", output)
-
-    def test_chown_invalid_owner(self):
-        test_file = os.path.join(self.test_dir, "file_to_chown.txt")
-        open(test_file, 'w').close()
-        # Изменим команду, чтобы проверять корректное сообщение для пустого владельца
-        self.emulator.change_owner(test_file, "")
-        output = self.output_widget.get("1.0", tk.END).strip()
-        self.assertIn("Usage: chown <file> <new_owner>", output)
 
 if __name__ == '__main__':
     unittest.main()
