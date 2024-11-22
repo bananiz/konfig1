@@ -1,0 +1,4 @@
+visualizer_path: '/usr/local/bin/mmdc'
+repository_path: '/Users/banani/PycharmProjects/pythonProject3/shkalikov'
+output_path: "Users/banani/PycharmProjects/pythonProject3/commit_graph.md"
+file_hash: '/Users/banani/PycharmProjects/pythonProject3/shkalikov/shkalikov.txt'  # Укажите правильный путь к файлу
