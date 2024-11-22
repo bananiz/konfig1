@@ -1,0 +1,16 @@
+set THRESHOLD = 90
+set HOSTNAME = "server1"
+
+{
+    HOSTNAME: ?[HOSTNAME],
+    METRICS: {
+        CPU: {
+            WARNING: ?[THRESHOLD],
+            CRITICAL: 95
+        },
+        MEMORY: {
+            WARNING: 80,
+            CRITICAL: 90
+        }
+    }
+}

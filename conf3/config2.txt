@@ -1,0 +1,19 @@
+set PLAYER_SPEED = 10
+set ENEMY_SPEED = 5
+
+{
+    PLAYER: {
+        NAME: "hero",
+        SPEED: ?[PLAYER_SPEED]
+    },
+    ENEMIES: {
+        GOBLIN: {
+            SPEED: ?[ENEMY_SPEED],
+            HEALTH: 30
+        },
+        DRAGON: {
+            SPEED: 3,
+            HEALTH: 100
+        }
+    }
+}
