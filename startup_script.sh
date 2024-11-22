@@ -1,3 +1,0 @@
-echo "ls"
-
-echo "ls"
