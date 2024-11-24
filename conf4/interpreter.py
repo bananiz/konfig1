@@ -1,53 +1,89 @@
-import sys
-import yaml
 import struct
+import yaml
+from typing import List
 
-def interpret(input_file, output_file, memory_range):
-    with open(input_file, 'rb') as f:
-        binary_data = f.read()
+class UVMInterpreter:
+    def __init__(self):
+        self.memory = [0] * 1024  # 1024 memory locations
+        self.accumulator = 0
 
-    memory = [0] * 1024  # Предположим, что память УВМ имеет размер 1024 байта
-    pc = 0
+    def load_constant(self, value: int):
+        self.accumulator = value
 
-    while pc < len(binary_data):
-        A = binary_data[pc]
-        print(f"Processing command at pc={pc}, A={A}")
-        if A == 14:  # LOAD_CONST
-            B = struct.unpack('>H', binary_data[pc + 1:pc + 3])[0]
-            C = struct.unpack('>I', binary_data[pc + 3:pc + 7])[0]
-            print(f"LOAD_CONST: B={B}, C={C}")
-            memory[B] = C
-            pc += 7
-        elif A == 25:  # READ_MEM
-            B = struct.unpack('>H', binary_data[pc + 1:pc + 3])[0]
-            print(f"READ_MEM: B={B}")
-            memory[B] = memory[B]
-            pc += 3
-        elif A == 15:  # WRITE_MEM
-            B = struct.unpack('>H', binary_data[pc + 1:pc + 3])[0]
-            print(f"WRITE_MEM: B={B}")
-            memory[B] = memory[B]
-            pc += 3
-        elif A == 20:  # MIN
-            B = struct.unpack('>H', binary_data[pc + 1:pc + 3])[0]
-            print(f"MIN: B={B}")
-            value = memory[B]
-            memory[B] = min(memory[B], value)
-            pc += 3
+    def memory_read(self, address: int):
+        if 0 <= address < len(self.memory):
+            self.accumulator = self.memory[address]
         else:
-            print(f"Unknown command: {A}")
-            sys.exit(1)
+            raise ValueError(f"Invalid memory address: {address}")
 
-    result = {f'{i}': memory[i] for i in range(memory_range[0], memory_range[1] + 1)}
+    def memory_write(self, address: int):
+        if 0 <= address < len(self.memory):
+            self.memory[address] = self.accumulator
+        else:
+            raise ValueError(f"Invalid memory address: {address}")
 
-    with open(output_file, 'w') as f:
-        yaml.dump({'memory': result}, f)
+    def min_operation(self, address: int):
+        if 0 <= address < len(self.memory):
+            self.accumulator = min(self.accumulator, self.memory[address])
+        else:
+            raise ValueError(f"Invalid memory address: {address}")
+
+    def execute_instruction(self, opcode: int, operand: int):
+        if opcode == 14:  # LOAD_CONST
+            self.load_constant(operand)
+        elif opcode == 25:  # MEMORY_READ
+            self.memory_read(operand)
+        elif opcode == 15:  # MEMORY_WRITE
+            self.memory_write(operand)
+        elif opcode == 20:  # MIN_OP
+            self.min_operation(operand)
+        else:
+            raise ValueError(f"Unknown opcode: {opcode}")
+
+    def execute(self, binary_path: str, start_addr: int, end_addr: int, output_path: str):
+        # Read binary file
+        with open(binary_path, 'rb') as f:
+            binary_data = f.read()
+
+        # Execute instructions
+        pos = 0
+        while pos < len(binary_data):
+            opcode = binary_data[pos] & 0x1F  # Get 5 bits
+            
+            if opcode == 14:  # LOAD_CONST (5 bytes)
+                operand = struct.unpack('<I', binary_data[pos+1:pos+5])[0]
+                pos += 5
+            else:  # Other instructions (3 bytes)
+                operand = struct.unpack('<H', binary_data[pos+1:pos+3])[0]
+                pos += 3
+                
+            self.execute_instruction(opcode, operand)
+
+        # Save memory range to output file
+        result = {
+            'memory_range': {
+                'start': start_addr,
+                'end': end_addr,
+                'values': self.memory[start_addr:end_addr+1]
+            }
+        }
+        
+        with open(output_path, 'w') as f:
+            yaml.dump(result, f)
+
+def main():
+    import sys
+    if len(sys.argv) != 5:
+        print("Usage: python interpreter.py <binary_file> <start_addr> <end_addr> <output_file>")
+        sys.exit(1)
+
+    interpreter = UVMInterpreter()
+    interpreter.execute(
+        sys.argv[1],
+        int(sys.argv[2]),
+        int(sys.argv[3]),
+        sys.argv[4]
+    )
 
 if __name__ == '__main__':
-    if len(sys.argv) != 5:
-        print("Usage: python interpreter.py <input_file> <output_file> <memory_range_start> <memory_range_end>")
-        sys.exit(1)
-    input_file = sys.argv[1]
-    output_file = sys.argv[2]
-    memory_range = list(map(int, sys.argv[3:5]))
-    interpret(input_file, output_file, memory_range)
+    main()
