@@ -1,0 +1,9 @@
+memory_range:
+  end: 4
+  start: 0
+  values:
+  - 42
+  - 55
+  - 23
+  - 76
+  - 34
