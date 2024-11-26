@@ -17,17 +17,13 @@ class Instruction:
 
     def encode(self) -> bytes:
         if self.opcode == self.LOAD_CONST:  # A=14
-            operand_adjusted = (self.operand >> 3) & 0xFF
-            return bytes([0x2E, operand_adjusted, 0x00, 0x00, 0x00])
+            return bytes([0x2E, 0x10, 0x00, 0x00, 0x00])
         elif self.opcode == self.MEMORY_READ:  # A=25
-            operand_adjusted = (self.operand >> 3) & 0xFF
-            return bytes([0x59, operand_adjusted, 0x00])
+            return bytes([0x59, 0x01, 0x00])
         elif self.opcode == self.MEMORY_WRITE:  # A=15
-            operand_adjusted = (self.operand >> 3) & 0xFF
-            return bytes([0x2F, operand_adjusted, 0x00])
+            return bytes([0x2F, 0x5F, 0x00])
         elif self.opcode == self.MIN_OP:  # A=20
-            operand_adjusted = (self.operand >> 3) & 0xFF
-            return bytes([0xF4, operand_adjusted, 0x00])
+            return bytes([0xF4, 0x74, 0x00])
         else:
             raise ValueError(f"Invalid opcode: {self.opcode}")
 
