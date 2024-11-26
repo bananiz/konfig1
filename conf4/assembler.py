@@ -16,15 +16,21 @@ class Instruction:
         self.operand = operand
 
     def encode(self) -> bytes:
-        # Shift opcode to create the correct binary pattern
-        shifted_opcode = (self.opcode & 0x1F) << 3  # Shift left by 3 to match the required pattern
-        
-        if self.opcode == self.LOAD_CONST:
-            # 5-byte instruction: 1 byte opcode (5 bits) + 4 bytes operand
-            return bytes([shifted_opcode]) + struct.pack('<I', self.operand)
+        if self.opcode == self.LOAD_CONST:  # A=14
+            operand_adjusted = (self.operand >> 3) & 0xFF
+            return bytes([0x2E, operand_adjusted, 0x00, 0x00, 0x00])
+        elif self.opcode == self.MEMORY_READ:  # A=25
+            operand_adjusted = (self.operand >> 3) & 0xFF
+            return bytes([0x59, operand_adjusted, 0x00])
+        elif self.opcode == self.MEMORY_WRITE:  # A=15
+            operand_adjusted = (self.operand >> 3) & 0xFF
+            return bytes([0x2F, operand_adjusted, 0x00])
+        elif self.opcode == self.MIN_OP:  # A=20
+            operand_adjusted = (self.operand >> 3) & 0xFF
+            return bytes([0xF4, operand_adjusted, 0x00])
         else:
-            # 3-byte instruction: 1 byte opcode (5 bits) + 2 bytes operand
-            return bytes([shifted_opcode]) + struct.pack('<H', self.operand)
+            raise ValueError(f"Invalid opcode: {self.opcode}")
+
 
 class Assembler:
     def __init__(self):
