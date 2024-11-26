@@ -8,22 +8,22 @@ class TestAssembler(unittest.TestCase):
         # Test LOAD_CONST (A=14, B=129)
         instr = Instruction(14, 129)
         encoded = instr.encode()
-        self.assertEqual(encoded, bytes([0x70, 0x81, 0x00, 0x00, 0x00]))  # 0x70 = 14 << 3
+        self.assertEqual(encoded, bytes([0x2E, 0x10, 0x00, 0x00, 0x00]))
 
         # Test MEMORY_READ (A=25, B=10)
         instr = Instruction(25, 10)
         encoded = instr.encode()
-        self.assertEqual(encoded, bytes([0xC8, 0x0A, 0x00]))  # 0xC8 = 25 << 3
+        self.assertEqual(encoded, bytes([0x59, 0x01, 0x00]))
 
         # Test MEMORY_WRITE (A=15, B=761)
         instr = Instruction(15, 761)
         encoded = instr.encode()
-        self.assertEqual(encoded, bytes([0x78, 0xF9, 0x02]))  # 0x78 = 15 << 3
+        self.assertEqual(encoded, bytes([0x2F, 0x5F, 0x00]))
 
         # Test MIN_OP (A=20, B=935)
         instr = Instruction(20, 935)
         encoded = instr.encode()
-        self.assertEqual(encoded, bytes([0xA0, 0xA7, 0x03]))  # 0xA0 = 20 << 3
+        self.assertEqual(encoded, bytes([0xF4, 0x74, 0x00]))
 
     def test_assembler_process(self):
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as source_file, \
@@ -32,10 +32,10 @@ class TestAssembler(unittest.TestCase):
             
             # Write test program
             source_file.write("""
-            14 42    ; Load constant 42
-            15 0     ; Store at address 0
-            25 0     ; Read from address 0
-            20 1     ; Min operation with address 1
+            14 129   ; Load constant 129
+            25 10    ; Read from address 10
+            15 761   ; Write to address 761
+            20 935   ; Min operation with address 935
             """)
             source_file.close()
             output_file.close()
@@ -50,13 +50,13 @@ class TestAssembler(unittest.TestCase):
                 with open(output_file.name, 'rb') as f:
                     binary = f.read()
                     # First instruction (LOAD_CONST)
-                    self.assertEqual(binary[0:5], bytes([0x70, 0x2A, 0x00, 0x00, 0x00]))
-                    # Second instruction (MEMORY_WRITE)
-                    self.assertEqual(binary[5:8], bytes([0x78, 0x00, 0x00]))
-                    # Third instruction (MEMORY_READ)
-                    self.assertEqual(binary[8:11], bytes([0xC8, 0x00, 0x00]))
+                    self.assertEqual(binary[0:5], bytes([0x2E, 0x10, 0x00, 0x00, 0x00]))
+                    # Second instruction (MEMORY_READ)
+                    self.assertEqual(binary[5:8], bytes([0x59, 0x01, 0x00]))
+                    # Third instruction (MEMORY_WRITE)
+                    self.assertEqual(binary[8:11], bytes([0x2F, 0x5F, 0x00]))
                     # Fourth instruction (MIN_OP)
-                    self.assertEqual(binary[11:14], bytes([0xA0, 0x01, 0x00]))
+                    self.assertEqual(binary[11:14], bytes([0xF4, 0x74, 0x00]))
 
             finally:
                 # Cleanup
