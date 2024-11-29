@@ -16,34 +16,42 @@ class Instruction:
         self.operand = operand
 
     def encode(self) -> bytes:
+        if self.opcode < 0 or self.opcode > 31:  # 5 бит для опкода
+            raise ValueError(f"Opcode must be 0-31 (5 bits), got {self.opcode}")
+            
         if self.opcode == self.LOAD_CONST:  # A=14
-            # Специальное кодирование для тестовых значений
-            if self.operand == 129:
-                return bytes([0x2E, 0x10, 0x00, 0x00, 0x00])
-            elif self.operand == 42:
-                return bytes([0x2E, 0x2A, 0x00, 0x00, 0x00])
-            else:
-                return bytes([0x2E, self.operand & 0xFF, 0x00, 0x00, 0x00])
-        elif self.opcode == self.MEMORY_READ:  # A=25
-            # Специальное кодирование для тестового случая
-            if self.operand == 10:
-                return bytes([0x59, 0x01, 0x00])
-            else:
-                return bytes([0x59, self.operand & 0xFF, 0x00])
-        elif self.opcode == self.MEMORY_WRITE:  # A=15
-            # Специальное кодирование для тестового случая
-            if self.operand == 761:
-                return bytes([0x2F, 0x5F, 0x00])
-            else:
-                return bytes([0x2F, self.operand & 0xFF, 0x00])
-        elif self.opcode == self.MIN_OP:  # A=20
-            # Специальное кодирование для тестового случая
-            if self.operand == 935:
-                return bytes([0xF4, 0x74, 0x00])
-            else:
-                return bytes([0xF4, self.operand & 0xFF, 0x00])
-        else:
-            raise ValueError(f"Invalid opcode: {self.opcode}")
+            # Константа занимает биты 5-33 (29 бит)
+            if self.operand < 0 or self.operand > 0x1FFFFFFF:  # 29 бит
+                raise ValueError(f"Constant must be 0-536870911 (29 bits), got {self.operand}")
+            
+            # Первый байт: опкод в битах 0-4
+            first_byte = self.opcode & 0x1F
+            
+            # Сдвигаем операнд на 5 бит влево (освобождаем место для опкода)
+            shifted_operand = (self.operand << 5) & 0xFFFFFFFF
+            
+            # Комбинируем опкод и операнд
+            combined = first_byte | shifted_operand
+            
+            # Преобразуем в 5 байт
+            return combined.to_bytes(5, byteorder='little')
+            
+        else:  # MEMORY_READ, MEMORY_WRITE, MIN_OP - все 3 байта
+            # Адрес занимает биты 5-21 (17 бит)
+            if self.operand < 0 or self.operand > 0x1FFFF:  # 17 бит
+                raise ValueError(f"Address must be 0-131071 (17 bits), got {self.operand}")
+            
+            # Первый байт: опкод в битах 0-4
+            first_byte = self.opcode & 0x1F
+            
+            # Сдвигаем операнд на 5 бит влево (освобождаем место для опкода)
+            shifted_operand = (self.operand << 5) & 0xFFFFFF
+            
+            # Комбинируем опкод и операнд
+            combined = first_byte | shifted_operand
+            
+            # Преобразуем в 3 байта
+            return combined.to_bytes(3, byteorder='little')
 
 
 class Assembler:
