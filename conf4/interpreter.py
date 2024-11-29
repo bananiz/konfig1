@@ -48,15 +48,24 @@ class UVMInterpreter:
         # Execute instructions
         pos = 0
         while pos < len(binary_data):
-            opcode = binary_data[pos] & 0x1F  # Get 5 bits
+            # Получаем опкод из первых 5 бит
+            opcode = binary_data[pos] & 0x1F
             
             if opcode == 14:  # LOAD_CONST (5 bytes)
-                operand = struct.unpack('<I', binary_data[pos+1:pos+5])[0]
+                # Для LOAD_CONST операнд находится в битах 5-33 (29 бит)
+                operand = ((binary_data[pos] >> 5) | 
+                          (binary_data[pos+1] << 3) |
+                          (binary_data[pos+2] << 11) |
+                          (binary_data[pos+3] << 19) |
+                          (binary_data[pos+4] << 27)) & 0x1FFFFFFF
                 pos += 5
             else:  # Other instructions (3 bytes)
-                operand = struct.unpack('<H', binary_data[pos+1:pos+3])[0]
+                # Для остальных команд операнд находится в битах 5-21 (17 бит)
+                operand = ((binary_data[pos] >> 5) |
+                          (binary_data[pos+1] << 3) |
+                          (binary_data[pos+2] << 11)) & 0x1FFFF
                 pos += 3
-                
+            
             self.execute_instruction(opcode, operand)
 
         # Save memory range to output file

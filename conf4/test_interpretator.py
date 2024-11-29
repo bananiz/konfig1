@@ -54,10 +54,14 @@ class TestInterpreter(unittest.TestCase):
         # 3. Loads constant 17
         # 4. Takes min of 17 and value at address 0
         instructions = [
-            bytes([0x2E, 0x2A, 0x00, 0x00, 0x00]),  # LOAD_CONST 42
-            bytes([0x2F, 0x00, 0x00]),              # MEMORY_WRITE 0
-            bytes([0x2E, 0x11, 0x00, 0x00, 0x00]),  # LOAD_CONST 17
-            bytes([0xF4, 0x00, 0x00]),              # MIN_OP 0
+            # LOAD_CONST 42 (опкод 14 в битах 0-4, значение 42 в битах 5-33)
+            bytes([14 | ((42 & 0x7) << 5), (42 >> 3) & 0xFF, 0x00, 0x00, 0x00]),
+            # MEMORY_WRITE 0 (опкод 15 в битах 0-4, адрес 0 в битах 5-21)
+            bytes([15, 0x00, 0x00]),
+            # LOAD_CONST 17 (опкод 14 в битах 0-4, значение 17 в битах 5-33)
+            bytes([14 | ((17 & 0x7) << 5), (17 >> 3) & 0xFF, 0x00, 0x00, 0x00]),
+            # MIN_OP 0 (опкод 20 в битах 0-4, адрес 0 в битах 5-21)
+            bytes([20, 0x00, 0x00])
         ]
         
         binary_file = create_test_binary(instructions)
