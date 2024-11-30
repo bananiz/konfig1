@@ -58,6 +58,13 @@ class Assembler:
     def __init__(self):
         self.instructions: List[Instruction] = []
         self.log_entries: List[Dict] = []
+        # Словарь мнемоник и их опкодов
+        self.mnemonics = {
+            'LOAD': Instruction.LOAD_CONST,    # 14
+            'READ': Instruction.MEMORY_READ,   # 25
+            'WRITE': Instruction.MEMORY_WRITE, # 15
+            'MIN': Instruction.MIN_OP         # 20
+        }
 
     def parse_line(self, line: str) -> Tuple[int, int]:
         # Remove comments and strip whitespace
@@ -69,7 +76,12 @@ class Assembler:
         if len(parts) < 2:
             raise ValueError(f"Invalid instruction format: {line}")
 
-        opcode = int(parts[0])
+        # Преобразуем мнемонику в опкод
+        mnemonic = parts[0].upper()
+        if mnemonic not in self.mnemonics:
+            raise ValueError(f"Unknown mnemonic: {mnemonic}")
+        
+        opcode = self.mnemonics[mnemonic]
         operand = int(parts[1])
         return opcode, operand
 
@@ -83,38 +95,38 @@ class Assembler:
                 if not line or line.startswith(';'):
                     continue
                     
-                # Split line into opcode and operand
-                parts = line.split(';')[0].strip().split()
-                if len(parts) != 2:
+                result = self.parse_line(line)
+                if result is None:
                     continue
                     
-                opcode = int(parts[0])
-                operand = int(parts[1])
-                
+                opcode, operand = result
                 instruction = Instruction(opcode, operand)
                 instructions.append(instruction)
+                
+                # Отладочный вывод для всех команд
                 print(f"Assembled: opcode={opcode}, operand={operand}")
                 print(f"Binary: {' '.join(hex(b) for b in instruction.encode())}")
-        
+
         # Write binary file
         with open(output_path, 'wb') as f:
             for instruction in instructions:
-                binary = instruction.encode()
-                f.write(binary)
+                f.write(instruction.encode())
                 
         # Write log file
-        log = {
-            'instructions': [
-                {
-                    'opcode': instr.opcode,
-                    'operand': instr.operand,
-                    'binary': ' '.join(hex(b) for b in instr.encode())
+        log_entries = []
+        for instruction in instructions:
+            # Формат "ключ=значение" как в требованиях
+            entry = {
+                'instruction': {
+                    'opcode': f'A={instruction.opcode}',
+                    'operand': f'B={instruction.operand}',
+                    'binary': f'bytes=[{", ".join(hex(b) for b in instruction.encode())}]'
                 }
-                for instr in instructions
-            ]
-        }
+            }
+            log_entries.append(entry)
+            
         with open(log_path, 'w') as f:
-            yaml.dump(log, f)
+            yaml.dump({'instructions': log_entries}, f, sort_keys=False)
 
 def main():
     import sys

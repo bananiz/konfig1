@@ -30,12 +30,12 @@ class TestAssembler(unittest.TestCase):
              tempfile.NamedTemporaryFile(mode='wb', delete=False) as output_file, \
              tempfile.NamedTemporaryFile(mode='w', delete=False) as log_file:
             
-            # Write test program
+            # Write test program using mnemonics
             source_file.write("""
-            14 129   ; Load constant 129
-            25 10    ; Read from address 10
-            15 761   ; Write to address 761
-            20 935   ; Min operation with address 935
+            LOAD 129   ; Load constant 129
+            READ 10    ; Read from address 10
+            WRITE 761  ; Write to address 761
+            MIN 935    ; Min operation with address 935
             """)
             source_file.close()
             output_file.close()
@@ -49,14 +49,16 @@ class TestAssembler(unittest.TestCase):
                 # Verify binary output
                 with open(output_file.name, 'rb') as f:
                     binary = f.read()
-                    # First instruction (LOAD_CONST)
-                    self.assertEqual(binary[0:5], bytes([0x2E, 0x10, 0x00, 0x00, 0x00]))
-                    # Second instruction (MEMORY_READ)
-                    self.assertEqual(binary[5:8], bytes([0x59, 0x01, 0x00]))
-                    # Third instruction (MEMORY_WRITE)
-                    self.assertEqual(binary[8:11], bytes([0x2F, 0x5F, 0x00]))
-                    # Fourth instruction (MIN_OP)
-                    self.assertEqual(binary[11:14], bytes([0xF4, 0x74, 0x00]))
+                    
+                # Expected binary output based on instruction encoding
+                expected = bytes([
+                    0x2E, 0x10, 0x00, 0x00, 0x00,  # LOAD 129
+                    0x59, 0x01, 0x00,               # READ 10
+                    0x2F, 0x5F, 0x00,               # WRITE 761
+                    0xF4, 0x74, 0x00                # MIN 935
+                ])
+                
+                self.assertEqual(binary, expected)
 
             finally:
                 # Cleanup

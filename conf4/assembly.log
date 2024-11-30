@@ -1,169 +1,225 @@
 instructions:
-- binary: 0x4e 0x5 0x0 0x0 0x0
-  opcode: 14
-  operand: 42
-- binary: 0xf 0x0 0x0
-  opcode: 15
-  operand: 0
-- binary: 0x2e 0x2 0x0 0x0 0x0
-  opcode: 14
-  operand: 17
-- binary: 0xf 0x1 0x0
-  opcode: 15
-  operand: 8
-- binary: 0x19 0x0 0x0
-  opcode: 25
-  operand: 0
-- binary: 0x14 0x1 0x0
-  opcode: 20
-  operand: 8
-- binary: 0xf 0x1 0x0
-  opcode: 15
-  operand: 8
-- binary: 0xee 0x6 0x0 0x0 0x0
-  opcode: 14
-  operand: 55
-- binary: 0x2f 0x0 0x0
-  opcode: 15
-  operand: 1
-- binary: 0x2e 0xb 0x0 0x0 0x0
-  opcode: 14
-  operand: 89
-- binary: 0x2f 0x1 0x0
-  opcode: 15
-  operand: 9
-- binary: 0x39 0x0 0x0
-  opcode: 25
-  operand: 1
-- binary: 0x34 0x1 0x0
-  opcode: 20
-  operand: 9
-- binary: 0x2f 0x1 0x0
-  opcode: 15
-  operand: 9
-- binary: 0xee 0x2 0x0 0x0 0x0
-  opcode: 14
-  operand: 23
-- binary: 0x4f 0x0 0x0
-  opcode: 15
-  operand: 2
-- binary: 0x8e 0x1 0x0 0x0 0x0
-  opcode: 14
-  operand: 12
-- binary: 0x4f 0x1 0x0
-  opcode: 15
-  operand: 10
-- binary: 0x59 0x0 0x0
-  opcode: 25
-  operand: 2
-- binary: 0x54 0x1 0x0
-  opcode: 20
-  operand: 10
-- binary: 0x4f 0x1 0x0
-  opcode: 15
-  operand: 10
-- binary: 0x8e 0x9 0x0 0x0 0x0
-  opcode: 14
-  operand: 76
-- binary: 0x6f 0x0 0x0
-  opcode: 15
-  operand: 3
-- binary: 0xae 0x5 0x0 0x0 0x0
-  opcode: 14
-  operand: 45
-- binary: 0x6f 0x1 0x0
-  opcode: 15
-  operand: 11
-- binary: 0x79 0x0 0x0
-  opcode: 25
-  operand: 3
-- binary: 0x74 0x1 0x0
-  opcode: 20
-  operand: 11
-- binary: 0x6f 0x1 0x0
-  opcode: 15
-  operand: 11
-- binary: 0x4e 0x4 0x0 0x0 0x0
-  opcode: 14
-  operand: 34
-- binary: 0x8f 0x0 0x0
-  opcode: 15
-  operand: 4
-- binary: 0x6e 0x8 0x0 0x0 0x0
-  opcode: 14
-  operand: 67
-- binary: 0x8f 0x1 0x0
-  opcode: 15
-  operand: 12
-- binary: 0x99 0x0 0x0
-  opcode: 25
-  operand: 4
-- binary: 0x94 0x1 0x0
-  opcode: 20
-  operand: 12
-- binary: 0x8f 0x1 0x0
-  opcode: 15
-  operand: 12
-- binary: 0x6e 0xb 0x0 0x0 0x0
-  opcode: 14
-  operand: 91
-- binary: 0xaf 0x0 0x0
-  opcode: 15
-  operand: 5
-- binary: 0xee 0x3 0x0 0x0 0x0
-  opcode: 14
-  operand: 31
-- binary: 0xaf 0x1 0x0
-  opcode: 15
-  operand: 13
-- binary: 0xb9 0x0 0x0
-  opcode: 25
-  operand: 5
-- binary: 0xb4 0x1 0x0
-  opcode: 20
-  operand: 13
-- binary: 0xaf 0x1 0x0
-  opcode: 15
-  operand: 13
-- binary: 0x8e 0x3 0x0 0x0 0x0
-  opcode: 14
-  operand: 28
-- binary: 0xcf 0x0 0x0
-  opcode: 15
-  operand: 6
-- binary: 0x6e 0xa 0x0 0x0 0x0
-  opcode: 14
-  operand: 83
-- binary: 0xcf 0x1 0x0
-  opcode: 15
-  operand: 14
-- binary: 0xd9 0x0 0x0
-  opcode: 25
-  operand: 6
-- binary: 0xd4 0x1 0x0
-  opcode: 20
-  operand: 14
-- binary: 0xcf 0x1 0x0
-  opcode: 15
-  operand: 14
-- binary: 0xee 0x7 0x0 0x0 0x0
-  opcode: 14
-  operand: 63
-- binary: 0xef 0x0 0x0
-  opcode: 15
-  operand: 7
-- binary: 0x6e 0x2 0x0 0x0 0x0
-  opcode: 14
-  operand: 19
-- binary: 0xef 0x1 0x0
-  opcode: 15
-  operand: 15
-- binary: 0xf9 0x0 0x0
-  opcode: 25
-  operand: 7
-- binary: 0xf4 0x1 0x0
-  opcode: 20
-  operand: 15
-- binary: 0xef 0x1 0x0
-  opcode: 15
-  operand: 15
+- instruction:
+    opcode: A=14
+    operand: B=100
+    binary: bytes=[0x8e, 0xc, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=0
+    binary: bytes=[0xf, 0x0, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=200
+    binary: bytes=[0xe, 0x19, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=1
+    binary: bytes=[0x2f, 0x0, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=300
+    binary: bytes=[0x8e, 0x25, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=2
+    binary: bytes=[0x4f, 0x0, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=400
+    binary: bytes=[0xe, 0x32, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=3
+    binary: bytes=[0x6f, 0x0, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=500
+    binary: bytes=[0x8e, 0x3e, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=4
+    binary: bytes=[0x8f, 0x0, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=600
+    binary: bytes=[0xe, 0x4b, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=5
+    binary: bytes=[0xaf, 0x0, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=700
+    binary: bytes=[0x8e, 0x57, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=6
+    binary: bytes=[0xcf, 0x0, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=800
+    binary: bytes=[0xe, 0x64, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=7
+    binary: bytes=[0xef, 0x0, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=150
+    binary: bytes=[0xce, 0x12, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=8
+    binary: bytes=[0xf, 0x1, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=150
+    binary: bytes=[0xce, 0x12, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=9
+    binary: bytes=[0x2f, 0x1, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=250
+    binary: bytes=[0x4e, 0x1f, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=10
+    binary: bytes=[0x4f, 0x1, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=450
+    binary: bytes=[0x4e, 0x38, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=11
+    binary: bytes=[0x6f, 0x1, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=450
+    binary: bytes=[0x4e, 0x38, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=12
+    binary: bytes=[0x8f, 0x1, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=550
+    binary: bytes=[0xce, 0x44, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=13
+    binary: bytes=[0xaf, 0x1, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=750
+    binary: bytes=[0xce, 0x5d, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=14
+    binary: bytes=[0xcf, 0x1, 0x0]
+- instruction:
+    opcode: A=14
+    operand: B=650
+    binary: bytes=[0x4e, 0x51, 0x0, 0x0, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=15
+    binary: bytes=[0xef, 0x1, 0x0]
+- instruction:
+    opcode: A=25
+    operand: B=0
+    binary: bytes=[0x19, 0x0, 0x0]
+- instruction:
+    opcode: A=20
+    operand: B=8
+    binary: bytes=[0x14, 0x1, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=8
+    binary: bytes=[0xf, 0x1, 0x0]
+- instruction:
+    opcode: A=25
+    operand: B=1
+    binary: bytes=[0x39, 0x0, 0x0]
+- instruction:
+    opcode: A=20
+    operand: B=9
+    binary: bytes=[0x34, 0x1, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=9
+    binary: bytes=[0x2f, 0x1, 0x0]
+- instruction:
+    opcode: A=25
+    operand: B=2
+    binary: bytes=[0x59, 0x0, 0x0]
+- instruction:
+    opcode: A=20
+    operand: B=10
+    binary: bytes=[0x54, 0x1, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=10
+    binary: bytes=[0x4f, 0x1, 0x0]
+- instruction:
+    opcode: A=25
+    operand: B=3
+    binary: bytes=[0x79, 0x0, 0x0]
+- instruction:
+    opcode: A=20
+    operand: B=11
+    binary: bytes=[0x74, 0x1, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=11
+    binary: bytes=[0x6f, 0x1, 0x0]
+- instruction:
+    opcode: A=25
+    operand: B=4
+    binary: bytes=[0x99, 0x0, 0x0]
+- instruction:
+    opcode: A=20
+    operand: B=12
+    binary: bytes=[0x94, 0x1, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=12
+    binary: bytes=[0x8f, 0x1, 0x0]
+- instruction:
+    opcode: A=25
+    operand: B=5
+    binary: bytes=[0xb9, 0x0, 0x0]
+- instruction:
+    opcode: A=20
+    operand: B=13
+    binary: bytes=[0xb4, 0x1, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=13
+    binary: bytes=[0xaf, 0x1, 0x0]
+- instruction:
+    opcode: A=25
+    operand: B=6
+    binary: bytes=[0xd9, 0x0, 0x0]
+- instruction:
+    opcode: A=20
+    operand: B=14
+    binary: bytes=[0xd4, 0x1, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=14
+    binary: bytes=[0xcf, 0x1, 0x0]
+- instruction:
+    opcode: A=25
+    operand: B=7
+    binary: bytes=[0xf9, 0x0, 0x0]
+- instruction:
+    opcode: A=20
+    operand: B=15
+    binary: bytes=[0xf4, 0x1, 0x0]
+- instruction:
+    opcode: A=15
+    operand: B=15
+    binary: bytes=[0xef, 0x1, 0x0]

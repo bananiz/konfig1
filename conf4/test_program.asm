@@ -1,76 +1,74 @@
-; Test program to perform element-wise min operation on two vectors
-; Vector 1 starts at address 0
-; Vector 2 starts at address 8
-; Result will be stored in Vector 2
+; Тестовая программа
+; Выполнить поэлементно операцию min() над двумя векторами длины 8
+; Вектор 1: с адреса 0
+; Вектор 2: с адреса 8
+; Результат записывается во второй вектор (с адреса 8)
 
-; Load and compare first element
-14 42    ; Load constant 42 into accumulator
-15 0     ; Store in first vector at address 0
-14 17    ; Load constant 17 into accumulator
-15 8     ; Store in second vector at address 8
-25 0     ; Read from first vector
-20 8     ; Min operation with second vector
-15 8     ; Store result back in second vector
+; Первый вектор (адреса 0-7)
+LOAD 100    ; Загрузить 100 в аккумулятор
+WRITE 0     ; Сохранить в память по адресу 0
+LOAD 200    ; Загрузить 200
+WRITE 1     ; Сохранить по адресу 1
+LOAD 300    ; Загрузить 300
+WRITE 2     ; Сохранить по адресу 2
+LOAD 400    ; Загрузить 400
+WRITE 3     ; Сохранить по адресу 3
+LOAD 500    ; Загрузить 500
+WRITE 4     ; Сохранить по адресу 4
+LOAD 600    ; Загрузить 600
+WRITE 5     ; Сохранить по адресу 5
+LOAD 700    ; Загрузить 700
+WRITE 6     ; Сохранить по адресу 6
+LOAD 800    ; Загрузить 800
+WRITE 7     ; Сохранить по адресу 7
 
-; Load and compare second element
-14 55    ; Load constant 55
-15 1     ; Store in first vector
-14 89    ; Load constant 89
-15 9     ; Store in second vector
-25 1     ; Read from first vector
-20 9     ; Min operation
-15 9     ; Store result
+; Второй вектор (адреса 8-15)
+LOAD 150    ; Загрузить 150 в аккумулятор
+WRITE 8     ; Сохранить в память по адресу 8
+LOAD 150    ; Загрузить 150
+WRITE 9     ; Сохранить по адресу 9
+LOAD 250    ; Загрузить 250
+WRITE 10    ; Сохранить по адресу 10
+LOAD 450    ; Загрузить 450
+WRITE 11    ; Сохранить по адресу 11
+LOAD 450    ; Загрузить 450
+WRITE 12    ; Сохранить по адресу 12
+LOAD 550    ; Загрузить 550
+WRITE 13    ; Сохранить по адресу 13
+LOAD 750    ; Загрузить 750
+WRITE 14    ; Сохранить по адресу 14
+LOAD 650    ; Загрузить 650
+WRITE 15    ; Сохранить по адресу 15
 
-; Load and compare third element
-14 23    ; Load constant 23
-15 2     ; Store in first vector
-14 12    ; Load constant 12
-15 10    ; Store in second vector
-25 2     ; Read from first vector
-20 10    ; Min operation
-15 10    ; Store result
+; Выполнить операцию min() для каждой пары элементов
+READ 0      ; Загрузить значение из первого вектора (адрес 0)
+MIN 8       ; Выполнить min с элементом второго вектора (адрес 8)
+WRITE 8     ; Сохранить результат во второй вектор (адрес 8)
 
-; Load and compare fourth element
-14 76    ; Load constant 76
-15 3     ; Store in first vector
-14 45    ; Load constant 45
-15 11    ; Store in second vector
-25 3     ; Read from first vector
-20 11    ; Min operation
-15 11    ; Store result
+READ 1      ; Загрузить значение из первого вектора (адрес 1)
+MIN 9       ; Выполнить min с элементом второго вектора (адрес 9)
+WRITE 9     ; Сохранить результат во второй вектор (адрес 9)
 
-; Load and compare fifth element
-14 34    ; Load constant 34
-15 4     ; Store in first vector
-14 67    ; Load constant 67
-15 12    ; Store in second vector
-25 4     ; Read from first vector
-20 12    ; Min operation
-15 12    ; Store result
+READ 2      ; Загрузить значение из первого вектора (адрес 2)
+MIN 10      ; Выполнить min с элементом второго вектора (адрес 10)
+WRITE 10    ; Сохранить результат во второй вектор (адрес 10)
 
-; Load and compare sixth element
-14 91    ; Load constant 91
-15 5     ; Store in first vector
-14 31    ; Load constant 31
-15 13    ; Store in second vector
-25 5     ; Read from first vector
-20 13    ; Min operation
-15 13    ; Store result
+READ 3      ; Загрузить значение из первого вектора (адрес 3)
+MIN 11      ; Выполнить min с элементом второго вектора (адрес 11)
+WRITE 11    ; Сохранить результат во второй вектор (адрес 11)
 
-; Load and compare seventh element
-14 28    ; Load constant 28
-15 6     ; Store in first vector
-14 83    ; Load constant 83
-15 14    ; Store in second vector
-25 6     ; Read from first vector
-20 14    ; Min operation
-15 14    ; Store result
+READ 4      ; Загрузить значение из первого вектора (адрес 4)
+MIN 12      ; Выполнить min с элементом второго вектора (адрес 12)
+WRITE 12    ; Сохранить результат во второй вектор (адрес 12)
 
-; Load and compare eighth element
-14 63    ; Load constant 63
-15 7     ; Store in first vector
-14 19    ; Load constant 19
-15 15    ; Store in second vector
-25 7     ; Read from first vector
-20 15    ; Min operation
-15 15    ; Store result
+READ 5      ; Загрузить значение из первого вектора (адрес 5)
+MIN 13      ; Выполнить min с элементом второго вектора (адрес 13)
+WRITE 13    ; Сохранить результат во второй вектор (адрес 13)
+
+READ 6      ; Загрузить значение из первого вектора (адрес 6)
+MIN 14      ; Выполнить min с элементом второго вектора (адрес 14)
+WRITE 14    ; Сохранить результат во второй вектор (адрес 14)
+
+READ 7      ; Загрузить значение из первого вектора (адрес 7)
+MIN 15      ; Выполнить min с элементом второго вектора (адрес 15)
+WRITE 15    ; Сохранить результат во второй вектор (адрес 15)
